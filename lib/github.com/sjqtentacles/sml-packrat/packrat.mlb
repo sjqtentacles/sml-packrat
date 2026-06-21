@@ -1,0 +1,8 @@
+(* MLton basis file for the sml-packrat library.
+ * Brings `structure Packrat` into scope. *)
+local
+  $(SML_LIB)/basis/basis.mlb
+in
+  packrat.sig
+  packrat.sml
+end
