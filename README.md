@@ -104,6 +104,34 @@ val () = exprRef := expr
 val P.Ok (n, _) = P.parse (P.seqL expr (P.notP P.anyc)) "2*(3+4)-1"   (* n = 13 *)
 ```
 
+## Example
+
+`make example` builds and runs [`examples/demo.sml`](examples/demo.sml), which
+parses fixed literal arithmetic expressions with the precedence-correct PEG
+above, exercises terminals/ordered choice, memoization, and left-recursion
+detection (output is byte-identical under MLton and Poly/ML):
+
+```
+=== sml-packrat demo ===
+
+Arithmetic PEG (expr <- term (('+'/'-') term)*, with precedence):
+  2+3*4  =  14
+  (2+3)*4  =  20
+  10-3-2  =  5
+  2*(3+4*(5-1))  =  38
+
+Terminals and ordered choice:
+  chr #"a" on "abc"   -> a @1
+  str "let" on "lex"  -> err @0
+
+Memoization (shared-prefix ordered choice):
+  S <- A 'c' / A 'd'  on "aaad"  -> ok @4
+  memo hits so far    = 1
+
+Left recursion is detected, not looped forever:
+  L <- L 'a' / 'a'  on "aaa"  -> LeftRecursion "L"
+```
+
 ## Project layout
 
 ```
